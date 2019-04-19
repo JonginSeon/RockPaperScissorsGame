@@ -3,6 +3,7 @@ from _thread import *
 import pickle
 from game import Game
 
+#IP address of the machine running the server
 server = "35.40.125.89"
 port = 2000
 
@@ -13,6 +14,7 @@ try:
 except socket.error as e:
     str(e)
 
+# listens for two connections to start a game
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
@@ -21,14 +23,14 @@ games = {}
 idCount = 0
 
 
-def threaded_client(conn, p, gameId):
+def threaded_client(connection p, gameId):
     global idCount
-    conn.send(str.encode(str(p)))
+    connection.send(str.encode(str(p)))
 
     reply = "Connected"
     while True:
         try:
-            data = conn.recv(4096).decode()
+            data = connection.recv(4096).decode()
 
             if gameId in games:
                 game = games[gameId]
@@ -41,7 +43,7 @@ def threaded_client(conn, p, gameId):
                     elif data != "get":
                         game.play(p, data)
 
-                    conn.sendall(pickle.dumps(game))
+                    connection.sendall(pickle.dumps(game))
             else:
                 break
         except:
@@ -54,12 +56,12 @@ def threaded_client(conn, p, gameId):
     except:
         pass
     idCount -= 1
-    conn.close()
+    connection.close()
 
 
 
 while True:
-    conn, addr = s.accept()
+    connection addr = s.accept()
     print("Connected to:", addr)
 
     idCount += 1
@@ -72,5 +74,5 @@ while True:
         games[gameId].ready = True
         p = 1
 
-
-    start_new_thread(threaded_client, (conn, p, gameId))
+    # when 2 more clients connect, a new thread is started
+    start_new_thread(threaded_client, (connection p, gameId))

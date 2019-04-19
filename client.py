@@ -2,6 +2,7 @@ import pygame
 from network import Network
 pygame.font.init()
 
+#settubg height and width of the window
 width = 900
 height = 900
 win = pygame.display.set_mode((width, height))
@@ -99,8 +100,9 @@ def redrawWindow(win, game, p):
 
     pygame.display.update()
 
-
+# creates the buttons at the given locations
 btns = [Button("Rock", 100, 400, (0,0,0)), Button("Scissors", 400, 400, (255,0,0)), Button("Paper", 700, 400, (0,255,0))]
+
 def main():
     run = True
     clock = pygame.time.Clock()
